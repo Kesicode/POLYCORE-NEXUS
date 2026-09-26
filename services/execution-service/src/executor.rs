@@ -54,46 +54,40 @@ pub fn language_to_image(language: &str) -> Option<&'static str> {
 
 /// Builds the execution command for a given language.
 pub fn build_exec_command(language: &str, filename: &str) -> Vec<String> {
-    match language {
-        "python" => vec!["python3".into(), filename.into()],
-        "javascript" => vec!["node".into(), filename.into()],
-        "typescript" => vec!["npx".into(), "--yes".into(), "tsx".into(), filename.into()],
-        "go" => vec!["go".into(), "run".into(), filename.into()],
-        "rust" => vec![
-            "sh".into(), "-c".into(),
-            format!("rustc {} -o /tmp/prog && /tmp/prog", filename),
-        ],
-        "c" => vec![
-            "sh".into(), "-c".into(),
-            format!("gcc {} -o /tmp/prog && /tmp/prog", filename),
-        ],
-        "cpp" => vec![
-            "sh".into(), "-c".into(),
-            format!("g++ -std=c++20 {} -o /tmp/prog && /tmp/prog", filename),
-        ],
-        "java" => vec![
-            "sh".into(), "-c".into(),
-            format!("javac {} && java -cp /sandbox Main", filename),
-        ],
-        "r" => vec!["Rscript".into(), filename.into()],
-        "julia" => vec!["julia".into(), filename.into()],
-        "ruby" => vec!["ruby".into(), filename.into()],
-        "php" => vec!["php".into(), filename.into()],
-        "lua" => vec!["lua".into(), filename.into()],
-        "bash" => vec!["bash".into(), filename.into()],
-        "elixir" => vec!["elixir".into(), filename.into()],
-        "haskell" => vec!["runghc".into(), filename.into()],
-        "dart" => vec!["dart".into(), filename.into()],
-        "kotlin" => vec![
-            "sh".into(), "-c".into(),
-            format!("kotlinc {} -include-runtime -d /tmp/prog.jar && java -jar /tmp/prog.jar", filename),
-        ],
-        "swift" => vec!["swift".into(), filename.into()],
-        "groovy" => vec!["groovy".into(), filename.into()],
-        "zig" => vec!["zig".into(), "run".into(), filename.into()],
-        "csharp" => vec!["dotnet".into(), "script".into(), filename.into()],
-        _ => vec!["sh".into(), "-c".into(), format!("cat {}", filename)],
-    }
+    let run_cmd = match language {
+        "python" => format!("python3 {}", filename),
+        "javascript" => format!("node {}", filename),
+        "typescript" => format!("npx --yes tsx {}", filename),
+        "go" => format!("go run {}", filename),
+        "rust" => format!("rustc {} -o /tmp/prog && /tmp/prog", filename),
+        "c" => format!("gcc {} -o /tmp/prog && /tmp/prog", filename),
+        "cpp" => format!("g++ -std=c++20 {} -o /tmp/prog && /tmp/prog", filename),
+        "java" => format!("javac {} && java -cp /sandbox Main", filename),
+        "r" => format!("Rscript {}", filename),
+        "julia" => format!("julia {}", filename),
+        "ruby" => format!("ruby {}", filename),
+        "php" => format!("php {}", filename),
+        "lua" => format!("lua {}", filename),
+        "bash" => format!("bash {}", filename),
+        "elixir" => format!("elixir {}", filename),
+        "haskell" => format!("runghc {}", filename),
+        "dart" => format!("dart {}", filename),
+        "kotlin" => format!("kotlinc {} -include-runtime -d /tmp/prog.jar && java -jar /tmp/prog.jar", filename),
+        "swift" => format!("swift {}", filename),
+        "groovy" => format!("groovy {}", filename),
+        "zig" => format!("zig run {}", filename),
+        "csharp" => format!("dotnet script {}", filename),
+        _ => format!("cat {}", filename),
+    };
+
+    vec![
+        "sh".into(),
+        "-c".into(),
+        format!(
+            "mkdir -p /sandbox && printf '%s' \"$SOURCE_CODE_B64\" | base64 -d > {} && cd /sandbox && {}",
+            filename, run_cmd
+        ),
+    ]
 }
 
 /// Returns file extension for a language.
@@ -194,8 +188,8 @@ pub async fn execute(
             readonly_rootfs: Some(true),
             // Writable tmpfs at /sandbox and /tmp only
             tmpfs: Some(HashMap::from([
-                ("/sandbox".into(), "size=32m,noexec,nosuid".into()),
-                ("/tmp".into(), "size=32m,noexec,nosuid".into()),
+                ("/sandbox".into(), "size=32m,rw,exec,nosuid".into()),
+                ("/tmp".into(), "size=32m,rw,exec,nosuid".into()),
             ])),
             ..Default::default()
         }),
@@ -230,16 +224,6 @@ pub async fn execute(
             });
         }
     };
-
-    // Write source code into container via exec
-    let _write_exec = docker.create_exec(
-        &container_id,
-        CreateExecOptions {
-            cmd: Some(vec!["sh", "-c",
-                &format!("mkdir -p /sandbox && printf '%s' \"$SOURCE_CODE\" > {}", filename)]),
-            ..Default::default()
-        },
-    ).await;
 
     // Start container
     if let Err(e) = docker

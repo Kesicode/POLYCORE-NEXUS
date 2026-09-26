@@ -134,6 +134,7 @@ services:
       dockerfile: Dockerfile
     container_name: polycore-execution-service
     restart: unless-stopped
+    user: root
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-polycore}:${POSTGRES_PASSWORD:-polycore_secret}@postgres:5432/${POSTGRES_DB:-polycore_nexus}
       REDIS_URL: redis://redis:6379
@@ -208,7 +209,7 @@ services:
       api-gateway:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3000"]
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000"]
       interval: 20s
       timeout: 5s
       retries: 3
