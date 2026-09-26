@@ -20,8 +20,6 @@ __pycache__/
 venv/
 vendor/
 .cargo/
-Cargo.lock
-go.sum
 *.o
 *.a
 *.so

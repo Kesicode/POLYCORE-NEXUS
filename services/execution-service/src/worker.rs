@@ -1,11 +1,11 @@
 //! Background worker — consumes Redis queue and executes jobs.
 
 use std::sync::Arc;
-use tracing::{error, info, warn};
+use tracing::{error, info};
 
 use crate::{
     executor,
-    models::{ExecutionJob, ExecutionStatus},
+    models::ExecutionJob,
     AppState,
 };
 

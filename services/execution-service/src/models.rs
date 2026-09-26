@@ -1,8 +1,6 @@
 //! Data models for execution jobs and results.
 
-use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use uuid::Uuid;
 
 /// Status of an execution job.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, sqlx::Type)]

@@ -40,11 +40,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Lowercase image name
+        id: image_name
+        run: |
+          IMAGE_NAME=$(echo "${{ env.REGISTRY }}/${{ github.repository_owner }}/polycore-nexus-${{ matrix.service }}" | tr '[:upper:]' '[:lower:]')
+          echo "image=${IMAGE_NAME}" >> $GITHUB_OUTPUT
+
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}-${{ matrix.service }}
+          images: ${{ steps.image_name.outputs.image }}
           tags: |
             type=ref,event=branch
             type=semver,pattern={{version}}

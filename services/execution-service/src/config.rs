@@ -1,6 +1,6 @@
 //! Configuration loaded from environment variables.
 
-use anyhow::{bail, Result};
+use anyhow::Result;
 
 #[derive(Clone, Debug)]
 pub struct Config {

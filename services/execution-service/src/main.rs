@@ -1,3 +1,4 @@
+#![allow(dead_code, unused_imports, unused_variables)]
 //! PolyCore Nexus — Execution Service
 //! Securely executes user code in isolated Docker containers.
 

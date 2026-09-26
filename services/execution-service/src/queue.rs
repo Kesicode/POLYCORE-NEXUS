@@ -1,4 +1,4 @@
-use redis::{AsyncCommands, Client};
+use redis::AsyncCommands;
 use tracing::{error, info};
 
 use crate::config::Config;

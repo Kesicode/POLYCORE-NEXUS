@@ -9,15 +9,13 @@ use bollard::{
         Config as ContainerConfig, CreateContainerOptions, LogOutput, LogsOptions,
         RemoveContainerOptions, StartContainerOptions, StopContainerOptions,
     },
-    exec::{CreateExecOptions, StartExecResults},
-    models::{HostConfig, ResourcesUlimits},
+    models::HostConfig,
 };
 use futures_util::StreamExt;
-use sha2::{Digest, Sha256};
 use std::collections::HashMap;
 use std::time::Instant;
 use tokio::time::{timeout, Duration};
-use tracing::{error, info, warn};
+use tracing::{error, warn};
 
 use crate::models::{ExecutionJob, ExecutionResult, ExecutionStatus};
 
@@ -382,7 +380,7 @@ fn base64_encode(input: &str) -> String {
         let b0 = chunk[0] as usize;
         let b1 = if chunk.len() > 1 { chunk[1] as usize } else { 0 };
         let b2 = if chunk.len() > 2 { chunk[2] as usize } else { 0 };
-        encoded.push(CHARS[(b0 >> 2)] as char);
+        encoded.push(CHARS[b0 >> 2] as char);
         encoded.push(CHARS[((b0 & 3) << 4) | (b1 >> 4)] as char);
         encoded.push(if chunk.len() > 1 { CHARS[((b1 & 15) << 2) | (b2 >> 6)] as char } else { '=' });
         encoded.push(if chunk.len() > 2 { CHARS[b2 & 63] as char } else { '=' });
