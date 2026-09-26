@@ -165,6 +165,7 @@ pub async fn execute(
 
     let cmd = build_exec_command(&job.language, &filename);
     let memory_bytes = job.memory_limit_mb * 1024 * 1024;
+    let src_env = format!("SOURCE_CODE_B64={}", base64_encode(&job.source_code));
 
     // Container configuration with strict security limits
     let container_config = ContainerConfig {
@@ -174,7 +175,7 @@ pub async fn execute(
         // Inject source code via environment to avoid filesystem mount issues
         // In production, use tmpfs volume mounts
         env: Some(vec![
-            &format!("SOURCE_CODE_B64={}", base64_encode(&job.source_code)),
+            src_env.as_str(),
             "HOME=/tmp",
         ]),
         host_config: Some(HostConfig {
@@ -231,7 +232,7 @@ pub async fn execute(
     };
 
     // Write source code into container via exec
-    let write_exec = docker.create_exec(
+    let _write_exec = docker.create_exec(
         &container_id,
         CreateExecOptions {
             cmd: Some(vec!["sh", "-c",
@@ -389,7 +390,6 @@ async fn cleanup_container(docker: &bollard::Docker, container_id: &str) -> Resu
 }
 
 fn base64_encode(input: &str) -> String {
-    use std::io::Write;
     // Simple base64 encoding without external dep
     let bytes = input.as_bytes();
     let mut encoded = String::new();

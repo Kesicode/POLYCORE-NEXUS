@@ -4,14 +4,16 @@ use tracing::{error, info};
 use crate::config::Config;
 use crate::models::ExecutionJob;
 
+pub const EXECUTION_QUEUE_KEY: &str = "polycore:executions:queue";
+
 /// Pop the next job from the execution queue (blocking, 5s timeout).
 /// Returns None on timeout or error.
 pub async fn pop_job(
     conn: &mut redis::aio::ConnectionManager,
-    config: &Config,
+    _config: &Config,
 ) -> Option<ExecutionJob> {
     let result: Option<(String, String)> = conn
-        .blpop(&config.execution_queue_key, 5.0)
+        .blpop(EXECUTION_QUEUE_KEY, 5.0)
         .await
         .unwrap_or(None);
 

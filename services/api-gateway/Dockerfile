@@ -6,7 +6,7 @@ WORKDIR /build
 RUN apk add --no-cache git ca-certificates
 
 # Download dependencies first (layer caching)
-COPY go.mod go.sum ./
+COPY go.mod go.sum* ./
 RUN go mod download
 
 # Copy source code
@@ -15,7 +15,7 @@ COPY . .
 # Build the binary
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
     go build -ldflags="-s -w -X main.version=1.0.0" \
-    -o api-gateway ./main.go
+    -o api-gateway .
 
 # ─── Final image ──────────────────────────────────────────────────────────────
 FROM alpine:3.20

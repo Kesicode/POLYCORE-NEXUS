@@ -1,4 +1,4 @@
-FROM rust:1.78-slim AS builder
+FROM rust:slim AS builder
 
 WORKDIR /build
 
@@ -6,7 +6,7 @@ WORKDIR /build
 RUN apt-get update && apt-get install -y pkg-config libssl-dev && rm -rf /var/lib/apt/lists/*
 
 # Cache dependencies
-COPY Cargo.toml Cargo.lock ./
+COPY Cargo.toml Cargo.lock* ./
 RUN mkdir src && echo 'fn main(){}' > src/main.rs
 RUN cargo build --release 2>&1 | tail -5
 RUN rm -f target/release/deps/execution*
@@ -18,7 +18,7 @@ RUN cargo build --release
 # ─── Final image ──────────────────────────────────────────────────────────────
 FROM debian:bookworm-slim
 
-RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y ca-certificates curl && rm -rf /var/lib/apt/lists/*
 
 # Non-root user
 RUN groupadd -g 1001 polycore && useradd -u 1001 -g polycore -s /sbin/nologin polycore

@@ -272,11 +272,12 @@ CREATE INDEX idx_devices_owner ON devices(owner_id);
 CREATE INDEX idx_devices_device_id ON devices(device_id);
 
 CREATE TABLE device_telemetry (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID DEFAULT uuid_generate_v4(),
     device_id UUID NOT NULL REFERENCES devices(id) ON DELETE CASCADE,
     topic VARCHAR(512) NOT NULL,
     payload JSONB NOT NULL,
-    received_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    received_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    PRIMARY KEY (id, received_at)
 ) PARTITION BY RANGE (received_at);
 
 CREATE TABLE device_telemetry_2026 PARTITION OF device_telemetry

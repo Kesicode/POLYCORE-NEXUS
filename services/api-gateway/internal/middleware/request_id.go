@@ -18,3 +18,8 @@ func RequestID(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
+
+// GetRequestID returns the X-Request-ID header from the request.
+func GetRequestID(r *http.Request) string {
+	return r.Header.Get("X-Request-ID")
+}

@@ -12,7 +12,6 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
-	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/joho/godotenv"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
@@ -36,7 +35,6 @@ func main() {
 
 	// Config
 	mqttBroker := getEnv("MQTT_BROKER_URL", "tcp://localhost:1883")
-	dbURL := getEnv("DATABASE_URL", "postgresql://polycore:polycore_secret@localhost:5432/polycore_nexus")
 	port := getEnv("IOT_SERVICE_PORT", "8005")
 
 	// In-memory device store
