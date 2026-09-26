@@ -129,7 +129,7 @@ async fn update_execution_status(state: &Arc<AppState>, execution_id: &str, stat
     };
 
     sqlx::query(&format!(
-        "UPDATE executions SET status = $1::execution_status{} WHERE id = $2",
+        "UPDATE executions SET status = $1::execution_status{} WHERE id::text = $2",
         started_at_clause
     ))
     .bind(status)
@@ -151,7 +151,7 @@ async fn save_execution_result(state: &Arc<AppState>, result: &crate::models::Ex
             stderr = $4,
             error_message = $5,
             completed_at = NOW()
-         WHERE id = $6"
+         WHERE id::text = $6"
     )
     .bind(&status_str)
     .bind(result.exit_code)
@@ -165,7 +165,7 @@ async fn save_execution_result(state: &Arc<AppState>, result: &crate::models::Ex
     // Save metrics
     sqlx::query(
         "INSERT INTO execution_metrics (execution_id, wall_time_ms, memory_bytes)
-         VALUES ($1, $2, $3)"
+         VALUES ($1::uuid, $2, $3)"
     )
     .bind(&result.id)
     .bind(result.wall_time_ms as i64)

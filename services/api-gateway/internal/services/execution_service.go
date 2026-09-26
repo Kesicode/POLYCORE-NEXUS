@@ -150,7 +150,7 @@ func (s *ExecutionService) Get(ctx context.Context, executionID, userID string) 
 		        e.queued_at, e.started_at, e.completed_at
 		 FROM executions e
 		 JOIN languages l ON l.id = e.language_id
-		 WHERE e.id = $1 AND (e.user_id = $2 OR $2 = 'admin')`,
+		 WHERE e.id::text = $1 AND (e.user_id::text = $2 OR $2 = 'admin')`,
 		executionID, userID,
 	).Scan(
 		&exec.ID, &exec.UserID, &languageName, &exec.SourceCode,
@@ -166,7 +166,7 @@ func (s *ExecutionService) Get(ctx context.Context, executionID, userID string) 
 	// Fetch metrics if completed
 	if exec.Status == StatusCompleted || exec.Status == StatusFailed {
 		_ = s.pool.QueryRow(ctx,
-			"SELECT wall_time_ms, memory_bytes FROM execution_metrics WHERE execution_id = $1",
+			"SELECT wall_time_ms, memory_bytes FROM execution_metrics WHERE execution_id::text = $1",
 			executionID,
 		).Scan(&exec.WallTimeMs, &exec.MemoryBytes)
 	}
@@ -189,7 +189,7 @@ func (s *ExecutionService) List(ctx context.Context, userID string, limit int) (
 		        e.queued_at, e.started_at, e.completed_at
 		 FROM executions e
 		 JOIN languages l ON l.id = e.language_id
-		 WHERE e.user_id = $1
+		 WHERE e.user_id::text = $1
 		 ORDER BY e.queued_at DESC
 		 LIMIT $2`,
 		userID, limit,

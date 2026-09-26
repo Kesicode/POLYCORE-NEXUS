@@ -51,7 +51,7 @@ func New(pool *pgxpool.Pool, rdb *redis.Client, cfg *config.Config, logger *zap.
 	executionH := handlers.NewExecutionHandler(executionSvc, logger)
 	projectH := handlers.NewProjectHandler(projectSvc, logger)
 	benchmarkH := handlers.NewBenchmarkHandler(benchmarkSvc, logger)
-	deviceH := handlers.NewDeviceHandler(logger)
+	deviceH := handlers.NewDeviceHandler(cfg, logger)
 
 	jwtSecret := []byte(cfg.JWTSecret)
 	authMiddleware := middleware.Authenticate(jwtSecret, logger)

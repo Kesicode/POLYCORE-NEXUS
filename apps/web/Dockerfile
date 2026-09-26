@@ -23,6 +23,7 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 RUN cat > /etc/nginx/conf.d/default.conf <<'EOF'
 server {
     listen 3000;
+    listen [::]:3000;
     root /usr/share/nginx/html;
     index index.html;
 
@@ -36,4 +37,4 @@ server {
 EOF
 
 EXPOSE 3000
-HEALTHCHECK --interval=15s --timeout=5s CMD wget -qO- http://localhost:3000 || exit 1
+HEALTHCHECK --interval=15s --timeout=5s CMD wget -qO- http://127.0.0.1:3000 || exit 1
