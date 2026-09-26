@@ -1,0 +1,16 @@
+{
+    "runnerImage":  "polycore-runner-r:latest",
+    "description":  "PolyCore Nexus runner for R 4.4",
+    "color":  "#276DC3",
+    "version":  "4.4",
+    "category":  "data-science",
+    "isExperimental":  false,
+    "name":  "r",
+    "supportsMetrics":  true,
+    "fileExtensions":  [
+                           "r",
+                           "R"
+                       ],
+    "isActive":  true,
+    "displayName":  "R"
+}

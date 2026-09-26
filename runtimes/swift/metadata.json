@@ -1,0 +1,15 @@
+{
+    "runnerImage":  "polycore-runner-swift:latest",
+    "description":  "PolyCore Nexus runner for Swift 5.10",
+    "color":  "#F05138",
+    "version":  "5.10",
+    "category":  "system",
+    "isExperimental":  false,
+    "name":  "swift",
+    "supportsMetrics":  true,
+    "fileExtensions":  [
+                           "swift"
+                       ],
+    "isActive":  true,
+    "displayName":  "Swift"
+}

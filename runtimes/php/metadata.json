@@ -1,0 +1,15 @@
+{
+    "runnerImage":  "polycore-runner-php:latest",
+    "description":  "PolyCore Nexus runner for PHP 8.3",
+    "color":  "#777BB4",
+    "version":  "8.3",
+    "category":  "scripting",
+    "isExperimental":  false,
+    "name":  "php",
+    "supportsMetrics":  true,
+    "fileExtensions":  [
+                           "php"
+                       ],
+    "isActive":  true,
+    "displayName":  "PHP"
+}

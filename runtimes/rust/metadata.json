@@ -1,0 +1,15 @@
+{
+    "runnerImage":  "polycore-runner-rust:latest",
+    "description":  "PolyCore Nexus runner for Rust 1.82",
+    "color":  "#CE412B",
+    "version":  "1.82",
+    "category":  "system",
+    "isExperimental":  false,
+    "name":  "rust",
+    "supportsMetrics":  true,
+    "fileExtensions":  [
+                           "rs"
+                       ],
+    "isActive":  true,
+    "displayName":  "Rust"
+}

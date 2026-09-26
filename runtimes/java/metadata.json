@@ -1,0 +1,15 @@
+{
+    "runnerImage":  "polycore-runner-java:latest",
+    "description":  "PolyCore Nexus runner for Java 21 LTS",
+    "color":  "#ED8B00",
+    "version":  "21 LTS",
+    "category":  "jvm",
+    "isExperimental":  false,
+    "name":  "java",
+    "supportsMetrics":  true,
+    "fileExtensions":  [
+                           "java"
+                       ],
+    "isActive":  true,
+    "displayName":  "Java"
+}

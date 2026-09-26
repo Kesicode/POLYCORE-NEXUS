@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-surface text-text-primary;
+    margin: 0;
+    padding: 0;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-panel;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-border-light;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-panel border border-border rounded-lg;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-white px-4 py-2 rounded-md text-sm font-medium
+           hover:bg-primary-600 transition-colors duration-150
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply bg-panel border border-border text-text-primary px-4 py-2 rounded-md text-sm font-medium
+           hover:bg-panel-hover transition-colors duration-150
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-ghost {
+    @apply text-text-secondary px-4 py-2 rounded-md text-sm font-medium
+           hover:bg-panel hover:text-text-primary transition-colors duration-150;
+  }
+
+  .btn-danger {
+    @apply bg-status-error text-white px-4 py-2 rounded-md text-sm font-medium
+           hover:bg-red-600 transition-colors duration-150;
+  }
+
+  .input {
+    @apply bg-panel border border-border rounded-md px-3 py-2 text-sm text-text-primary
+           placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary
+           focus:border-transparent transition-all duration-150 w-full;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium;
+  }
+
+  .badge-primary {
+    @apply badge bg-primary/20 text-primary;
+  }
+
+  .badge-success {
+    @apply badge bg-status-online/20 text-status-online;
+  }
+
+  .badge-warning {
+    @apply badge bg-status-warning/20 text-status-warning;
+  }
+
+  .badge-error {
+    @apply badge bg-status-error/20 text-status-error;
+  }
+
+  .badge-neutral {
+    @apply badge bg-panel-hover text-text-secondary;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', 'Fira Code', Menlo, monospace;
+  }
+}

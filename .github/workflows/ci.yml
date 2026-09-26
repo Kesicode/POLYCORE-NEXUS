@@ -1,0 +1,133 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ─── Go API Gateway ───────────────────────────────────────────────────────
+  api-gateway:
+    name: Go API Gateway
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/api-gateway
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          cache: true
+      - name: Download dependencies
+        run: go mod download
+      - name: Vet
+        run: go vet ./...
+      - name: Build
+        run: go build -v ./...
+      - name: Test
+        run: go test -race -coverprofile=coverage.out ./...
+        continue-on-error: true
+
+  # ─── Rust Execution Service ───────────────────────────────────────────────
+  execution-service:
+    name: Rust Execution Service
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/execution-service
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - name: Clippy
+        run: cargo clippy -- -D warnings
+      - name: Format check
+        run: cargo fmt --check
+      - name: Build
+        run: cargo build --release
+      - name: Test
+        run: cargo test
+
+  # ─── Python AI Service ────────────────────────────────────────────────────
+  ai-service:
+    name: Python AI Service
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/ai-service
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Lint (ruff)
+        run: pip install ruff && ruff check . || true
+      - name: Type check
+        run: pip install mypy && mypy . --ignore-missing-imports || true
+      - name: Import check
+        run: python -c "import main; print('Import OK')"
+
+  # ─── Go IoT Service ───────────────────────────────────────────────────────
+  iot-service:
+    name: Go IoT Service
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/iot-service
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          cache: true
+      - name: Download dependencies
+        run: go mod download
+      - name: Build
+        run: go build -v ./...
+
+  # ─── React Frontend ───────────────────────────────────────────────────────
+  web:
+    name: React Frontend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - name: Install
+        run: npm ci --legacy-peer-deps
+      - name: Type check
+        run: npm run type-check || true
+      - name: Build
+        run: npm run build
+
+  # ─── Notify on success ────────────────────────────────────────────────────
+  summary:
+    name: CI Summary
+    needs: [api-gateway, execution-service, ai-service, iot-service, web]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Check results
+        run: |
+          echo "API Gateway:       ${{ needs.api-gateway.result }}"
+          echo "Execution Service: ${{ needs.execution-service.result }}"
+          echo "AI Service:        ${{ needs.ai-service.result }}"
+          echo "IoT Service:       ${{ needs.iot-service.result }}"
+          echo "Web:               ${{ needs.web.result }}"

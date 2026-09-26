@@ -1,0 +1,15 @@
+{
+    "runnerImage":  "polycore-runner-csharp:latest",
+    "description":  "PolyCore Nexus runner for C# 12/.NET 8",
+    "color":  "#512BD4",
+    "version":  "12/.NET 8",
+    "category":  "dotnet",
+    "isExperimental":  false,
+    "name":  "csharp",
+    "supportsMetrics":  true,
+    "fileExtensions":  [
+                           "cs"
+                       ],
+    "isActive":  true,
+    "displayName":  "C#"
+}

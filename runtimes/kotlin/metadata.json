@@ -1,0 +1,16 @@
+{
+    "runnerImage":  "polycore-runner-kotlin:latest",
+    "description":  "PolyCore Nexus runner for Kotlin 2.0",
+    "color":  "#7F52FF",
+    "version":  "2.0",
+    "category":  "jvm",
+    "isExperimental":  false,
+    "name":  "kotlin",
+    "supportsMetrics":  true,
+    "fileExtensions":  [
+                           "kt",
+                           "kts"
+                       ],
+    "isActive":  true,
+    "displayName":  "Kotlin"
+}

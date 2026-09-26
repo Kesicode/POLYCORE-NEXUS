@@ -1,0 +1,15 @@
+{
+    "runnerImage":  "polycore-runner-lua:latest",
+    "description":  "PolyCore Nexus runner for Lua 5.4",
+    "color":  "#000080",
+    "version":  "5.4",
+    "category":  "scripting",
+    "isExperimental":  false,
+    "name":  "lua",
+    "supportsMetrics":  true,
+    "fileExtensions":  [
+                           "lua"
+                       ],
+    "isActive":  true,
+    "displayName":  "Lua"
+}
